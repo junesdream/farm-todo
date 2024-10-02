@@ -53,15 +53,16 @@ async def delete_list(list_id: str) -> bool:
 
 # Models for new items in the list
 class NewItem(BaseModel):
-    label: str
+    name: str
 
 class NewItemResponse(BaseModel):
     id: str
-    label: str
+    name: str
 
-@app.post("/api/lists/{list_id}/items/", status_code=status.HTTP_201_CREATED)
-async def create_item(list_id: str, new_item: NewItem) -> ToDoList:
-    return await app.todo_dal.create_item(list_id, new_item.label)
+@app.post("/api/lists", status_code=status.HTTP_201_CREATED)
+async def create_todo_list(new_list: NewList) -> NewListResponse:
+    response_id = await app.todo_dal.create_todo_list(new_list.name)
+    return NewListResponse(id=response_id, name=new_list.name)
 
 @app.delete("/api/lists/{list_id}/items/{item_id}")
 async def delete_item(list_id: str, item_id: str) -> ToDoList:
