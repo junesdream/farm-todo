@@ -24,12 +24,10 @@ function TodoList({ listId, handleBackButton }) {
 			try {
 				const { data } = await axios.post(
 					`/api/lists/${listData.id}/items/`,
-					{
-						label: labelRef.current.value,
-					}
+					{ label: labelRef.current.value }
 				);
 				setListData(data);
-				labelRef.current.value = ""; // Clear input after submit
+				labelRef.current.value = "";
 			} catch (error) {
 				console.error("Failed to create item:", error);
 			}
@@ -97,7 +95,7 @@ function TodoList({ listId, handleBackButton }) {
 						<span
 							className="trash"
 							onClick={(e) => {
-								e.stopPropagation(); // Prevent triggering toggle when clicking delete
+								e.stopPropagation();
 								handleDeleteItem(item.id);
 							}}
 						>

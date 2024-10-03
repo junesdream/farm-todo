@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
 import ListToDoLists from "./ListTodoLists/ListTodoLists";
@@ -12,42 +12,48 @@ function App() {
 		reloadData().catch(console.error);
 	}, []);
 
+	// Lade alle To-Do-Listen vom Backend
 	async function reloadData() {
-		const response = await axios.get("/api/lists");
-		const data = await response.data;
-		setListSummaries(data);
+		try {
+			const response = await axios.get("/api/lists");
+			console.log("Fetched Data: ", response.data);
+			setListSummaries(response.data);
+		} catch (error) {
+			console.error("Error loading lists", error); // Log detailed error
+		}
 	}
 
+	// Funktion zum Erstellen einer neuen To-Do-Liste
 	function handleNewToDoList(newName) {
 		const updateData = async () => {
-			const newListData = {
-				name: newName,
-			};
-
+			const newListData = { name: newName };
 			await axios.post(`/api/lists`, newListData);
-			reloadData().catch(console.error);
+			reloadData();
 		};
 		updateData();
 	}
 
+	// Funktion zum Löschen einer To-Do-Liste
 	function handleDeleteToDoList(id) {
 		const updateData = async () => {
 			await axios.delete(`/api/lists/${id}`);
-			reloadData().catch(console.error);
+			reloadData();
 		};
 		updateData();
 	}
 
+	// Funktion zur Auswahl einer Liste
 	function handleSelectList(id) {
-		console.log("Selecting item", id);
 		setSelectedItem(id);
 	}
 
+	// Funktion, um zurück zur Liste zu wechseln
 	function backToList() {
 		setSelectedItem(null);
-		reloadData().catch(console.error);
+		reloadData();
 	}
 
+	// Wenn keine Liste ausgewählt ist, zeige alle Listen
 	if (selectedItem === null) {
 		return (
 			<div className="App">
